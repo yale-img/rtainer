@@ -1,0 +1,89 @@
+#!/bin/bash
+
+set -e
+set -x
+
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+_GID=$(id -g)
+_UID=$(id -u)
+_UNAME=$(id -un)
+
+USAGE="$0 [command: build|start|stop|shell] [container name]"
+
+DOCKER_COMMAND=$1
+if [ -z "$DOCKER_COMMAND" ]; then
+  echo "Please specify a command."
+  echo $USAGE
+  exit
+fi
+
+CONTAINER_NAME=$2
+CONTAINER_NAME_FILE=$ROOT/config/name
+if test -f "$CONTAINER_NAME_FILE"; then
+  CONTAINER_NAME=$(cat $CONTAINER_NAME_FILE)
+fi
+if [ -z "$CONTAINER_NAME" ]; then
+  echo "Please specify a container name."
+  echo $USAGE
+  exit
+fi
+if [[ ! -f $CONTAINER_NAME_FILE ]]; then
+  echo $CONTAINER_NAME > $CONTAINER_NAME_FILE
+fi
+
+CONTAINER_FILE=$ROOT/docker/Dockerfile
+_DISPLAY="${DISPLAY-:1.0}"
+
+RUNNING_CONTAINER=$(docker container ls -q --filter name=$CONTAINER_NAME)
+
+EXEC="/bin/bash -l"
+MOUNT_DATA=$(cat $ROOT/config/mounts)
+# host-specific setup
+case "$(uname -s)" in
+   Darwin)
+     echo 'Mac OS X'
+     ;;
+   Linux)
+     echo 'Linux'
+     set +e
+     xhost +local:
+     set -e
+     HOST_FLAGS="--gpus all"
+     HOST_EXEC=$EXEC
+     ;;
+   CYGWIN*|MINGW32*|MSYS*|MINGW*)
+     echo 'MS Windows'
+     ;;
+   *)
+     echo 'Other OS'
+     ;;
+esac
+
+case $DOCKER_COMMAND in
+  build)
+    docker build \
+      --build-arg gid=$_GID \
+      --build-arg uid=$_UID \
+      --build-arg username=$_UNAME \
+      -t $CONTAINER_NAME \
+      -f docker/Dockerfile $ROOT
+    ;;
+  start)
+    docker run --rm \
+      $HOST_FLAGS \
+      $MOUNT_DATA \
+      $PORT_DATA \
+      -e DISPLAY=$_DISPLAY \
+      -it -d --name=$CONTAINER_NAME $CONTAINER_NAME $HOST_EXEC
+    ;;
+  stop)
+    docker stop $RUNNING_CONTAINER
+    ;;
+  shell):
+    docker exec -it $RUNNING_CONTAINER $EXEC
+    ;;
+   *)
+     echo Unknown Command $DOCKER_COMMAND
+     ;;
+esac
+
