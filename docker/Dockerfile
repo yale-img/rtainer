@@ -13,18 +13,18 @@ RUN /tmp/scripts/system_dependencies.sh
 ENV UID=$uid
 ENV GID=$gid
 ENV USERNAME=$username
-RUN mkdir -p /${USERNAME} && \
+RUN mkdir -p /home/${USERNAME} && \
     echo "${USERNAME}:x:${UID}:${GID}:${USERNAME},,,:/${USERNAME}:/bin/bash" >> /etc/passwd && \
     echo "${USERNAME}:x:${GID}:" >> /etc/group && \
     echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME} && \
     chmod 0440 /etc/sudoers.d/${USERNAME} && \
-    chown ${UID}:${GID} -R /${USERNAME}
+    chown ${UID}:${GID} -R /home/${USERNAME}
 
 USER $username
-ENV HOME /$username
-WORKDIR /$username
+ENV HOME /home/$username
+WORKDIR /home/$username
 
-ENV PATH="/${USERNAME}/.local/bin:${PATH}"
+ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
 RUN wget https://bootstrap.pypa.io/get-pip.py && \
 	python3 get-pip.py --user && rm get-pip.py
 
