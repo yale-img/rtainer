@@ -20,7 +20,7 @@ fi
 CONTAINER_NAME=$2
 CONTAINER_NAME_FILE=$ROOT/config/name
 if test -f "$CONTAINER_NAME_FILE"; then
-  CONTAINER_NAME=$(cat $CONTAINER_NAME_FILE)
+  CONTAINER_NAME="$(cat $CONTAINER_NAME_FILE)"
 fi
 if [ -z "$CONTAINER_NAME" ]; then
   echo "Please specify a container name."
@@ -37,7 +37,8 @@ _DISPLAY="${DISPLAY-:1.0}"
 RUNNING_CONTAINER=$(docker container ls -q --filter name=$CONTAINER_NAME)
 
 EXEC="/bin/bash -l"
-MOUNT_DATA=$(cat $ROOT/config/mounts)
+# cat with string interpolation
+MOUNT_DATA=eval echo eval 'cat $ROOT/config/mounts'
 # host-specific setup
 case "$(uname -s)" in
    Darwin)

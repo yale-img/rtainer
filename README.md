@@ -4,7 +4,22 @@ Easily run code with CUDA dependencies inside of a Docker container.
 
 ## Setup
 
-You only need to do this on the host once. If you already have Docker with nvidia-docker, skip this section.
+You only need to do this on the host once. If you already have the latest nvidia driver, Docker, and nvidia-docker all installed, you can skip this section.
+
+### Install the latest nvidia driver
+
+I like to use the `ubuntu-drivers` command.
+
+Remove all existing drivers first, then install the latest drivers like so:
+
+```
+sudo apt-get remove --purge '^nvidia-.*'
+sudo ubuntu-drivers autoinstall
+```
+
+>> Note: You don't need to install CUDA or cudnn on the host (but it's also fine if they're already installed), these will be installed in the container.
+
+### Install Docker with nvidia-docker
 
 Install Docker with nvidia-docker on an Ubuntu host by running:
 
@@ -44,6 +59,7 @@ curl -L https://gist.githubusercontent.com/nathantsoi/e668e83f8cadfa0b87b67d18cc
   - Each time you run it, a new terminal in the container will be opened.
 
 4. Inside a `./container shell`, run your code like normal.
+  - You'll know that you're in the container when your prompt looks something like: `ntsoi@0457dfe8d098:~$` where `ntsoi` is my username.
 
 
 
