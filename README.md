@@ -49,22 +49,27 @@ curl -L https://gist.githubusercontent.com/nathantsoi/e668e83f8cadfa0b87b67d18cc
 ## How to Run
 
 1. Run `./container build projectname` where `projectname` is a unique name to use for the container.
-  - Note that you only need to specify `projectname` the first time. It is saved on subsequent runs.
+  - Note that `projectname` is not required if you ran `install`. The `projectname` is set to the folder of your project by default.
+	- If you did not run `install`, you only need to specify `projectname` the first time the command is run. It is saved on subsequent runs.
   - You only need to re-build the container when the container name or installed dependencies change.- All dependencies should be installed in the container, you shouldn't run `apt` or `pip` inside the container later. So, if you want to add a dependency, you should add it to the appropriate file in `scripts/` and then run `./container build`.
   - Building the container will take a few minutes, but once it is built, it remains cached until the container configuration changes.
 
 >> Note: you can edit the project name later by changing it in the `config/name` file, but you'll need to re-build the container.
 
-2. Run `./container start`.
-  - The container needs to be started only once after your computer is turned on or restarted after the container is re-built.
+2. Run `./container start` (optional).
+  - The container needs to be started only once after your computer is turned on or `./container restart` after the container is re-built.
+	- The container will be automatically started if it is not running when you run the next command (`shell`).
   - This step is equivalent to turning on your new container (which is like a virtual machine).
 
 3. Run `./container shell`.
   - The `./container shell` command can be run as many times as you want.
   - Each time you run it, a new terminal in the container will be opened.
 
-4. Inside a `./container shell`, run your code like normal.
-  - You'll know that you're in the container when your prompt looks something like: `ntsoi@0457dfe8d098:~$` where `ntsoi` is my username.
+4. Run `./container shell`
+  - Then run `ls` to see the mounted folders and `cd` into your project folder. The project folder is automatically mounted inside the container.
+	- Run your code like normal.
+
+>> Note: you'll know that you're in the container when your prompt looks something like: `ntsoi@0457dfe8d098:~$` where `ntsoi` is my username.
 
 
 
