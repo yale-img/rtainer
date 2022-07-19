@@ -25,7 +25,7 @@ cp -vn $ROOT/config/* $PROJECT_DIR/config/
 cp -Rvn $ROOT/docker $PROJECT_DIR/docker
 cp -Rvn $ROOT/scripts $PROJECT_DIR/scripts
 cp -vn $ROOT/scripts/* $PROJECT_DIR/scripts/
-cp -Rvn $ROOT/container $PROJECT_DIR/container
+cp -v $ROOT/container $PROJECT_DIR/container
 
 # set the name
 echo $(basename -- $PROJECT_DIR) | awk '{print tolower($0)}' > $PROJECT_DIR/config/name

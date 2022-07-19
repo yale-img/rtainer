@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-#set -x
+set -x
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 _GID=$(id -g)
@@ -72,7 +72,10 @@ dockerrun() {
     -it -d --name=$CONTAINER_NAME $CONTAINER_NAME $HOST_EXEC
 }
 dockerstop() {
- [[ ! -z "$RUNNING_CONTAINER" ]] && docker stop $RUNNING_CONTAINER || echo "$CONTAINER_NAME is not running"
+  [[ ! -z "$RUNNING_CONTAINER" ]] && docker stop $RUNNING_CONTAINER || echo "$CONTAINER_NAME is not running"
+}
+dockershell() {
+  docker exec -it $RUNNING_CONTAINER $EXEC
 }
 
 case $DOCKER_COMMAND in
@@ -95,7 +98,9 @@ case $DOCKER_COMMAND in
     dockerrun
     ;;
   shell):
-    docker exec -it $RUNNING_CONTAINER $EXEC
+    [[ ! -z "$RUNNING_CONTAINER" ]] || dockerrun
+    RUNNING_CONTAINER=$(docker container ls -q --filter name=$CONTAINER_NAME)
+    dockershell
     ;;
    *)
      echo Unknown Command $DOCKER_COMMAND
