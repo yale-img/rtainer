@@ -29,7 +29,12 @@ curl -L https://gist.githubusercontent.com/nathantsoi/e668e83f8cadfa0b87b67d18cc
 
 ## How to Configure
 
-1. Fork this repository.
+1. Install the code
+	- If you're starting a new project, fork this repository and then place your source code anywhere in the forked project.
+		- `cd` into the forked repository directory
+	- If you want to add rtainer to an existing project, you can simply clone this repository and run `./install [path to existing project]`.
+		- `cd` into the existing project directory
+
 
 2. Edit the first line of the `Dockerfile`, setting the base container with a tag from: https://hub.docker.com/r/nvidia/cuda/tags
 
