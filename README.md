@@ -28,13 +28,22 @@ curl -L https://gist.githubusercontent.com/nathantsoi/e668e83f8cadfa0b87b67d18cc
 
 ## How to Run
 
-1. Run `./container build projectname` where projectname is a unique name to use for the container. You only need to re-build the container when the container name or installed dependencies change. All dependencies need to be installed in the container, you shouldn't run `apt` or `pip` inside the container later.
+1. Run `./container build projectname` where `projectname` is a unique name to use for the container.
+  - Note that you only need to specify `projectname` the first time. It is saved on subsequent runs.
+  - You only need to re-build the container when the container name or installed dependencies change.- All dependencies should be installed in the container, you shouldn't run `apt` or `pip` inside the container later. So, if you want to add a dependency, you should add it to the appropriate file in `scripts/` and then run `./container build`.
+  - Building the container will take a few minutes, but once it is built, it remains cached until the container configuration changes.
 
 >> Note: you can edit the project name later by changing it in the `config/name` file, but you'll need to re-build the container.
 
-2. Run `./container start`. The container needs to be started only once after your computer is turned on or restarted after the container is re-built. This step is equivalent to turning on your new container (which is like a virtual machine).
+2. Run `./container start`.
+  - The container needs to be started only once after your computer is turned on or restarted after the container is re-built.
+  - This step is equivalent to turning on your new container (which is like a virtual machine).
 
-3. Run `./container shell` every time you want to open a shell inside your new container. Inside a `./container shell`, run your code!
+3. Run `./container shell`.
+  - The `./container shell` command can be run as many times as you want.
+  - Each time you run it, a new terminal in the container will be opened.
+
+4. Inside a `./container shell`, run your code like normal.
 
 
 
