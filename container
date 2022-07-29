@@ -63,6 +63,14 @@ case "$(uname -s)" in
      ;;
 esac
 
+dockerbuild() {
+  docker build \
+    --build-arg gid=$_GID \
+    --build-arg uid=$_UID \
+    --build-arg username=$_UNAME \
+    -t $CONTAINER_NAME \
+    -f docker/Dockerfile $ROOT
+}
 dockerrun() {
   docker run --rm \
     $HOST_FLAGS \
@@ -80,12 +88,9 @@ dockershell() {
 
 case $DOCKER_COMMAND in
   build)
-    docker build \
-      --build-arg gid=$_GID \
-      --build-arg uid=$_UID \
-      --build-arg username=$_UNAME \
-      -t $CONTAINER_NAME \
-      -f docker/Dockerfile $ROOT
+    dockerbuild
+    dockerstop
+    dockerrun
     ;;
   start)
     dockerrun
