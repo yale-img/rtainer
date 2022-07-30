@@ -42,6 +42,10 @@ MOUNT_DATA=""
 while read -r line; do
     MOUNT_DATA="${MOUNT_DATA} $(eval echo -e "$line")"
 done < "$ROOT/config/mounts"
+PORT_DATA=""
+while read -r line; do
+    PORT_DATA="${PORT_DATA} $(eval echo -e "$line")"
+done < "$ROOT/config/ports"
 # host-specific setup
 case "$(uname -s)" in
    Darwin)
