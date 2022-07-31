@@ -96,6 +96,7 @@ dockershell() {
 case $DOCKER_COMMAND in
   build)
     dockerbuild
+    dockerprune
     dockerstop
     dockerrun
     ;;
