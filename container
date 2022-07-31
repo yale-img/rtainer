@@ -75,6 +75,9 @@ dockerbuild() {
     -t $CONTAINER_NAME \
     -f docker/Dockerfile $ROOT
 }
+dockerprune() {
+  docker image prune -f
+}
 dockerrun() {
   docker run --rm \
     $HOST_FLAGS \
@@ -95,6 +98,9 @@ case $DOCKER_COMMAND in
     dockerbuild
     dockerstop
     dockerrun
+    ;;
+  prune)
+    dockerprune
     ;;
   start)
     dockerrun
