@@ -27,6 +27,14 @@ Install Docker with nvidia-docker on an Ubuntu host by running:
 curl -L https://gist.githubusercontent.com/nathantsoi/e668e83f8cadfa0b87b67d18cc965bd3/raw/setup_docker.sh | sudo bash
 ```
 
+### (Optional) Automatic Image Pruning
+
+To enable monthly image pruning, run:
+
+```
+sudo cp cron/docker_prune /etc/cron.monthly/docker_prune
+```
+
 ## How to Configure
 
 1. Install the code

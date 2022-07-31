@@ -1,0 +1,2 @@
+#!/bin/bash
+docker image prune -f -a >> /var/log/docker-prune.log
