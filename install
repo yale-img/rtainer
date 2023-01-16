@@ -20,12 +20,10 @@ if [ ! -d "$PROJECT_DIR" ]; then
   exit
 fi
 
-cp -Rvn $ROOT/config $PROJECT_DIR/config
-cp -vn $ROOT/config/* $PROJECT_DIR/config/
-cp -Rvn $ROOT/docker $PROJECT_DIR/docker
-cp -Rvn $ROOT/scripts $PROJECT_DIR/scripts
-cp -vn $ROOT/scripts/* $PROJECT_DIR/scripts/
-cp -v $ROOT/container $PROJECT_DIR/container
+rsync -avz --stats --update $ROOT/config/ $PROJECT_DIR/config/
+rsync -avz --stats --update $ROOT/docker/ $PROJECT_DIR/docker/
+rsync -avz --stats --update $ROOT/scripts/ $PROJECT_DIR/scripts/
+rsync -avz --stats --update $ROOT/container $PROJECT_DIR/container
 
 # set the name
 echo $(basename -- $PROJECT_DIR) | awk '{print tolower($0)}' > $PROJECT_DIR/config/name
