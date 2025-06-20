@@ -4,10 +4,10 @@ Easily run code with CUDA dependencies inside of a Docker container.
 
 ## Quick Install
 
-Install rtainer directly into your project:
+Install rtainer directly into your project. `cd` into your project directory and run the following command:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/main/install | bash -s -- /path/to/your/project
+curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/refs/heads/master/install | bash -s -- .
 ```
 
 ## Setup

@@ -1,15 +1,19 @@
 #!/bin/bash
 
 set -e
-#set -x
+set -x
 
 # Default GitHub repository
 GITHUB_REPO="yale-img/rtainer"
-GITHUB_BRANCH="main"
+GITHUB_BRANCH="master"
 
 # Function to install from GitHub
 install_from_github() {
     local project_dir=$1
+    # if the project dir is '.', use the current directory
+    if [ "$project_dir" == "." ]; then
+        project_dir=$(pwd)
+    fi
     local temp_dir=$(mktemp -d)
     
     echo "Installing rtainer from GitHub to $project_dir..."
