@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-set -x
+#set -x
 
 # Default GitHub repository
 GITHUB_REPO="yale-img/rtainer"
@@ -42,6 +42,10 @@ install_from_github() {
     rm -rf "$temp_dir"
     
     echo "rtainer installed successfully to $project_dir"
+    echo "configure your container with your project dependencies by editing the docker/Dockerfile"
+    echo "then build the container once with the command: ./container build"
+    echo "after that you can start and enter a shell in the container with: ./container shell"
+    echo "you can run multiple shells in the same container by running ./container shell in another terminal window
 }
 
 # Function to install from local directory

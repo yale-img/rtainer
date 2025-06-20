@@ -119,8 +119,15 @@ case $DOCKER_COMMAND in
     RUNNING_CONTAINER=$(docker container ls -q --filter name=$CONTAINER_NAME)
     dockershell
     ;;
+  rm)
+    dockerstop
+    docker rmi $CONTAINER_NAME || echo "Image $CONTAINER_NAME does not exist"
+    ;;
    *)
      echo Unknown Command $DOCKER_COMMAND
+     # Display usage
+     echo $USAGE
+     exit 1
      ;;
 esac
 
