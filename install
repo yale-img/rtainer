@@ -45,7 +45,7 @@ install_from_github() {
     echo "configure your container with your project dependencies by editing the docker/Dockerfile"
     echo "then build the container once with the command: ./container build"
     echo "after that you can start and enter a shell in the container with: ./container shell"
-    echo "you can run multiple shells in the same container by running ./container shell in another terminal window
+    echo "you can run multiple shells in the same container by running ./container shell in another terminal window"
 }
 
 # Function to install from local directory
@@ -73,7 +73,7 @@ This script can be run in two ways:
    $0 /path/to/your/project
 
 2. Directly from GitHub (via curl):
-   curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/$GITHUB_BRANCH/install | bash -s -- /path/to/your/project"
+   curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/$GITHUB_BRANCH/install | bash -s -- ."
 
 PROJECT_DIR=$1
 if [ -z "$PROJECT_DIR" ]; then
