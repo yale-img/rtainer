@@ -3,27 +3,88 @@
 set -e
 #set -x
 
-ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# Default GitHub repository
+GITHUB_REPO="yale-img/rtainer"
+GITHUB_BRANCH="main"
 
-USAGE="$0 [path to target project]"
+# Function to install from GitHub
+install_from_github() {
+    local project_dir=$1
+    local temp_dir=$(mktemp -d)
+    
+    echo "Installing rtainer from GitHub to $project_dir..."
+    
+    # Download and extract the repository
+    curl -L "https://github.com/$GITHUB_REPO/archive/refs/heads/$GITHUB_BRANCH.tar.gz" | tar -xz -C "$temp_dir"
+    
+    local extracted_dir="$temp_dir/$(basename $GITHUB_REPO)-$GITHUB_BRANCH"
+    
+    # Create target directories if they don't exist
+    mkdir -p "$project_dir/config"
+    mkdir -p "$project_dir/docker"
+    
+    # Copy files
+    cp -r "$extracted_dir/config"/* "$project_dir/config/" || true
+    cp -r "$extracted_dir/docker"/* "$project_dir/docker/" || true
+    cp "$extracted_dir/container" "$project_dir/container"
+    
+    # Make container script executable
+    chmod +x "$project_dir/container"
+    
+    # Set the name
+    echo $(basename -- "$project_dir") | awk '{print tolower($0)}' > "$project_dir/config/name"
+    
+    # Cleanup
+    rm -rf "$temp_dir"
+    
+    echo "rtainer installed successfully to $project_dir"
+}
+
+# Function to install from local directory
+install_from_local() {
+    local project_dir=$1
+    local root_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+    
+    echo "Installing rtainer from local directory to $project_dir..."
+    
+    rsync -avz --stats --update "$root_dir/config/" "$project_dir/config/"
+    rsync -avz --stats --update "$root_dir/docker/" "$project_dir/docker/"
+    rsync -avz --stats --update "$root_dir/container" "$project_dir/container"
+    
+    # Set the name
+    echo $(basename -- "$project_dir") | awk '{print tolower($0)}' > "$project_dir/config/name"
+    
+    echo "rtainer installed successfully to $project_dir"
+}
+
+# Main script logic
+USAGE="$0 [path to target project]
+
+This script can be run in two ways:
+1. Locally (when rtainer is already cloned):
+   $0 /path/to/your/project
+
+2. Directly from GitHub (via curl):
+   curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/$GITHUB_BRANCH/install | bash -s -- /path/to/your/project"
 
 PROJECT_DIR=$1
 if [ -z "$PROJECT_DIR" ]; then
-  echo "Please a path to the target project."
-  echo $USAGE
-  exit
+  echo "Please specify a path to the target project."
+  echo "$USAGE"
+  exit 1
 fi
 
+# Create project directory if it doesn't exist
 if [ ! -d "$PROJECT_DIR" ]; then
-  echo "$PROJECT_DIR does not exist."
-  echo $USAGE
-  exit
+  echo "Creating directory: $PROJECT_DIR"
+  mkdir -p "$PROJECT_DIR"
 fi
 
-rsync -avz --stats --update $ROOT/config/ $PROJECT_DIR/config/
-rsync -avz --stats --update $ROOT/docker/ $PROJECT_DIR/docker/
-rsync -avz --stats --update $ROOT/scripts/ $PROJECT_DIR/scripts/
-rsync -avz --stats --update $ROOT/container $PROJECT_DIR/container
-
-# set the name
-echo $(basename -- $PROJECT_DIR) | awk '{print tolower($0)}' > $PROJECT_DIR/config/name
+# Determine if we're running from a local clone or from curl
+if [ -f "$(dirname "${BASH_SOURCE[0]}")/container" ]; then
+    # Local installation
+    install_from_local "$PROJECT_DIR"
+else
+    # GitHub installation (when script is piped from curl)
+    install_from_github "$PROJECT_DIR"
+fi

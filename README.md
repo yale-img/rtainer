@@ -2,6 +2,14 @@
 
 Easily run code with CUDA dependencies inside of a Docker container.
 
+## Quick Install
+
+Install rtainer directly into your project:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/main/install | bash -s -- /path/to/your/project
+```
+
 ## Setup
 
 You only need to do this on the host once. If you already have the latest nvidia driver, Docker, and nvidia-docker all installed, you can skip this section.
@@ -27,39 +35,43 @@ Install Docker with nvidia-docker on an Ubuntu host by running:
 curl -L https://gist.githubusercontent.com/nathantsoi/e668e83f8cadfa0b87b67d18cc965bd3/raw/setup_docker.sh | sudo bash
 ```
 
-### (Optional) Automatic Image Pruning
-
-To enable monthly image pruning, run:
-
-```
-sudo cp cron/docker_prune /etc/cron.monthly/docker_prune
-```
-
 ## How to Configure
 
 1. Install the code
-	- If you're starting a new project, fork this repository and then place your source code anywhere in the forked project.
-		- `cd` into the forked repository directory
-	- If you want to add rtainer to an existing project, you can simply clone this repository and run `./install [path to existing project]`.
-		- `cd` into the existing project directory
+
+	**Option A: Install directly from GitHub (Recommended)**
+	```bash
+	curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/main/install | bash -s -- /path/to/your/project
+	```
+	Then `cd` into your project directory.
+
+	**Option B: Fork and clone for new projects**
+	- Fork this repository and then place your source code anywhere in the forked project.
+	- `cd` into the forked repository directory
+
+	**Option C: Add to existing project**
+	- Clone this repository and run `./install [path to existing project]`.
+	- `cd` into the existing project directory
 
 
 2. Edit the first line of the `Dockerfile`, setting the base container with a tag from: https://hub.docker.com/r/nvidia/cuda/tags
 
-3. To install system-level packages (aka, via `apt`), modify the file `scripts/system_dependencies.sh`
+3. Customize the `Dockerfile` for your project:
+   - Replace `YOUR_PROJECT_NAME` in the bash profile line with your actual project name
+   - Add or remove Python packages in the pip install commands as needed
+   - Add any additional system packages to the apt-get install commands
 
-4. To install python packages (aka, via `pip`), modify the file `scripts/python_dependencies.sh`
+4. To change mount points (aka, map a folder on the host to a path in the container), modify the file `config/mounts`.
 
-5. To change mount points (aka, map a folder on the host to a path in the container), modify the file `config/mounts`.
-
-6. To change mapped ports (aka, map a port on the host to a portin the container, as in for tensorboard), modify the file `config/ports`.
+5. To change mapped ports (aka, map a port on the host to a port in the container, as in for tensorboard), modify the file `config/ports`.
 
 ## How to Run
 
 1. Run `./container build projectname` where `projectname` is a unique name to use for the container.
-  - Note that `projectname` is not required if you ran `install`. The `projectname` is set to the folder of your project by default.
-	- If you did not run `install`, you only need to specify `projectname` the first time the command is run. It is saved on subsequent runs.
-  - You only need to re-build the container when the container name or installed dependencies change.- All dependencies should be installed in the container, you shouldn't run `apt` or `pip` inside the container later. So, if you want to add a dependency, you should add it to the appropriate file in `scripts/` and then run `./container build`.
+  - Note that `projectname` is not required if you ran the install script. The `projectname` is set to the folder of your project by default.
+	- If you did not run the install script, you only need to specify `projectname` the first time the command is run. It is saved on subsequent runs.
+  - You only need to re-build the container when the container name or the Dockerfile changes.
+  - All dependencies should be installed in the container via the Dockerfile. If you want to add a dependency, you should add it to the Dockerfile and then run `./container build`.
   - Building the container will take a few minutes, but once it is built, it remains cached until the container configuration changes.
 
 >> Note: you can edit the project name later by changing it in the `config/name` file, but you'll need to re-build the container.

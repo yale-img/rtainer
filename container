@@ -83,6 +83,7 @@ dockerrun() {
     $HOST_FLAGS \
     $MOUNT_DATA \
     $PORT_DATA \
+    --ulimit nofile=65536:65536 \
     -e DISPLAY=$_DISPLAY \
     -it -d --name=$CONTAINER_NAME $CONTAINER_NAME $HOST_EXEC
 }
