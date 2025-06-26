@@ -41,9 +41,10 @@ curl -L https://gist.githubusercontent.com/nathantsoi/e668e83f8cadfa0b87b67d18cc
 
   `cd` into the existing project directory and run the following command:
 
-	```bash
-	curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/main/install | bash -s -- . 
-	```
+```bash
+curl -sSL https://raw.githubusercontent.com/yale-img/rtainer/main/install | bash -s -- . 
+```
+
 > NOTE: The install script will configure the container name to match the project name. In some cases, such as on a shared machine, it may be necessary to changed the project name so that it does not collide with another project. Do this by editing the file `config/name` in the project directory.
 
 2. Edit the `Dockerfile`, setting the base container on the first line with a tag from: https://hub.docker.com/ and any additional dependencies the project requires. For example:
